@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>VOLUMIX - Portable Volumetric Light Synthesizer</title>
+  <meta name="description" content="Audio-reactive 3D volumetric light beam synthesizer for fog, haze, and portable projectors.">
+  <meta name="theme-color" content="#000000">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Scaled Projection Canvas Container -->
+  <div id="canvas-container">
+    <canvas id="render-canvas"></canvas>
+  </div>
+
+  <!-- Full-Screen 32 Preset Grid Modal Overlay -->
+  <div id="preset-modal" class="preset-modal hidden">
+    <div class="preset-modal-content">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h2>32 VOLUMETRIC PRESETS</h2>
+          <span class="modal-subtitle">Tap any card to select mode</span>
+        </div>
+        <div class="modal-header-actions">
+          <button id="btn-fav-filter" class="btn btn-secondary">★ FAVS</button>
+          <button id="btn-close-modal" class="btn btn-icon btn-close" title="Close Presets Modal">✕</button>
+        </div>
+      </div>
+      
+      <!-- 32 Presets Responsive Grid -->
+      <div id="preset-grid" class="preset-grid">
+        <!-- Preset Cards injected dynamically via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- HUD Overlay Controls (Auto-Hiding) -->
+  <div id="hud-overlay" class="hud-visible">
+    
+    <!-- Top Status Bar -->
+    <header class="hud-header">
+      <div class="brand">
+        <span class="logo-icon">⚡</span>
+        <h1 class="logo-text">VOLUMIX</h1>
+      </div>
+
+      <!-- BPM & Audio Meter -->
+      <div class="bpm-container">
+        <div class="bpm-badge">
+          <span class="bpm-label">BPM</span>
+          <span id="bpm-value">120</span>
+        </div>
+        <button id="btn-tap-tempo" class="btn btn-secondary">TAP</button>
+        <div class="audio-meter">
+          <div id="audio-meter-bar" class="audio-meter-fill"></div>
+        </div>
+      </div>
+
+      <!-- Header Action -->
+      <div class="header-actions">
+        <button id="btn-fullscreen" class="btn btn-icon" title="Toggle Fullscreen">⛶</button>
+      </div>
+    </header>
+
+    <!-- Audio Player Bar (Shown when audio file is loaded) -->
+    <div id="audio-player-bar" class="audio-player-bar hidden">
+      <button id="btn-play-pause" class="btn btn-circle">▶</button>
+      <span id="track-name" class="track-name">No track loaded</span>
+      <input type="range" id="track-seek" value="0" min="0" max="100" class="slider">
+      <span id="track-time" class="track-time">0:00</span>
+    </div>
+
+    <!-- Center Tap-to-Hide Hint -->
+    <div id="hud-hint" class="hud-hint">
+      <span>Tap screen to toggle controls</span>
+    </div>
+
+    <!-- Floating Bottom VJ Dock Panel -->
+    <div class="hud-bottom-panel">
+      
+      <!-- Primary Action Toolbar Buttons -->
+      <div class="vj-dock-toolbar">
+        <button id="btn-mic" class="btn btn-dock" title="Toggle Microphone">
+          <span class="icon">🎤</span>
+          <span class="btn-text">MIC</span>
+        </button>
+        <label for="audio-file-input" class="btn btn-dock" title="Upload Audio File">
+          <span class="icon">📁</span>
+          <span class="btn-text">AUDIO</span>
+          <input type="file" id="audio-file-input" accept="audio/*" hidden>
+        </label>
+        <button id="btn-open-presets" class="btn btn-dock btn-primary-dock" title="Open 32 Presets Grid Modal">
+          <span class="icon">🎛️</span>
+          <span class="btn-text">32 PRESETS</span>
+        </button>
+        <button id="btn-multicolor" class="btn btn-dock active" title="Toggle Dual-Color Multi-Tinting">
+          <span class="icon">🎨</span>
+          <span class="btn-text">MULTI COLOR</span>
+        </button>
+        <button id="btn-autopilot" class="btn btn-dock" title="Toggle Sound-To-Light Auto-Pilot">
+          <span class="icon">🚀</span>
+          <span class="btn-text">AUTO</span>
+        </button>
+      </div>
+
+      <!-- Touch-Optimized Parameter Stepper Rows & Sliders -->
+      <div class="vj-controls">
+
+        <!-- MIC GAIN -->
+        <div class="touch-control-row">
+          <div class="row-header">
+            <span class="row-label">MIC GAIN</span>
+            <span id="val-sensitivity" class="row-val">1.5x</span>
+          </div>
+          <div class="row-controls">
+            <button id="btn-gain-dec" class="btn btn-step" title="Decrease Gain">-</button>
+            <input type="range" id="slider-sensitivity" min="0.5" max="4.0" step="0.1" value="1.5" class="touch-slider">
+            <button id="btn-gain-inc" class="btn btn-step" title="Increase Gain">+</button>
+          </div>
+        </div>
+
+        <!-- BEAM SIZE -->
+        <div class="touch-control-row">
+          <div class="row-header">
+            <span class="row-label">BEAM SIZE</span>
+            <span id="val-size" class="row-val">1.0x</span>
+          </div>
+          <div class="row-controls">
+            <button id="btn-size-dec" class="btn btn-step" title="Decrease Size">-</button>
+            <input type="range" id="slider-size" min="0.2" max="2.5" step="0.1" value="1.0" class="touch-slider">
+            <button id="btn-size-inc" class="btn btn-step" title="Increase Size">+</button>
+          </div>
+        </div>
+
+        <!-- SPEED -->
+        <div class="touch-control-row">
+          <div class="row-header">
+            <span class="row-label">SPEED</span>
+            <span id="val-speed" class="row-val">1.0x</span>
+          </div>
+          <div class="row-controls">
+            <button id="btn-speed-dec" class="btn btn-step" title="Decrease Speed">-</button>
+            <input type="range" id="slider-speed" min="0.2" max="2.0" step="0.1" value="1.0" class="touch-slider">
+            <button id="btn-speed-inc" class="btn btn-step" title="Increase Speed">+</button>
+          </div>
+        </div>
+
+        <!-- STROBE -->
+        <div class="touch-control-row">
+          <div class="row-header">
+            <span class="row-label">STROBE</span>
+            <span id="val-strobe" class="row-val">OFF</span>
+          </div>
+          <div class="row-controls">
+            <button id="btn-strobe-dec" class="btn btn-step" title="Decrease Strobe">-</button>
+            <input type="range" id="slider-strobe" min="0" max="6" step="1" value="0" class="touch-slider">
+            <button id="btn-strobe-inc" class="btn btn-step" title="Increase Strobe">+</button>
+          </div>
+        </div>
+
+        <!-- TRAIL FADE -->
+        <div class="touch-control-row">
+          <div class="row-header">
+            <span class="row-label">TRAIL FADE</span>
+            <span id="val-trail" class="row-val">OFF</span>
+          </div>
+          <div class="row-controls">
+            <button id="btn-trail-dec" class="btn btn-step" title="Decrease Trailing Fade">-</button>
+            <input type="range" id="slider-trail" min="0" max="90" step="10" value="0" class="touch-slider">
+            <button id="btn-trail-inc" class="btn btn-step" title="Increase Trailing Fade">+</button>
+          </div>
+        </div>
+
+        <!-- Enlarged Touch Color Chips -->
+        <div class="color-palette-selector">
+          <span class="control-label">LASER COLOR</span>
+          <div class="palette-options">
+            <button class="color-chip active" data-color="blue" style="background:#0032ff;" title="Authentic Blaize Blue"></button>
+            <button class="color-chip" data-color="green" style="background:#00ff66;" title="520nm Laser Green"></button>
+            <button class="color-chip" data-color="red" style="background:#ff0044;" title="635nm Crimson Red"></button>
+            <button class="color-chip" data-color="cyan" style="background:#00f7ff;" title="Cyber Cyan"></button>
+            <button class="color-chip" data-color="amber" style="background:#ffaa00;" title="Amber Gold"></button>
+            <button class="color-chip" data-color="violet" style="background:#cc00ff;" title="Acid Violet"></button>
+            <button class="color-chip" data-color="white" style="background:#ffffff;" title="High Luma White"></button>
+            <button class="color-chip" data-color="rainbow" style="background:linear-gradient(45deg, #ff0044, #00ff66, #0099ff);" title="Spectrum Shift"></button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript App Modules -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
