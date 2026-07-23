@@ -23,7 +23,7 @@ export class VolumetricRenderer {
     // Global Trailing Fade / Motion Persistence (0.0 = OFF, 0.9 = MAX 90%)
     this.trailFade = 0.0;
 
-    // Blaize Lerp Physics
+    // Exponential Lerp Physics
     this.size = 1.0;
     this.targetSize = 1.0;
     this.brightness = 1.0;
@@ -179,7 +179,7 @@ export class VolumetricRenderer {
       this.targetBrightness = 0.9;
     }
 
-    // Blaize Smooth Exponential Lerp Easing
+    // Smooth Exponential Lerp Easing
     this.size += 0.14 * (this.targetSize - this.size);
     this.brightness += 0.2 * (this.targetBrightness - this.brightness);
 

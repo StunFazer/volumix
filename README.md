@@ -1,6 +1,6 @@
 # VOLUMIX — Portable Volumetric Light Synthesizer
 
-**Volumix** is an audio-reactive 3D volumetric light synthesizer designed for mobile devices, tablets, laptops, and portable projectors. Inspired by the procedural visual aesthetics of *Blaize V3*, Volumix is built from the ground up using HTML5 Canvas, Web Audio API, and CSS Grid to turn any portable projector into a professional volumetric light show.
+**Volumix** is an audio-reactive 3D volumetric light synthesizer designed for mobile devices, tablets, laptops, and portable projectors. Volumix is built from the ground up using HTML5 Canvas, Web Audio API, and CSS Grid to turn any portable projector into a professional volumetric light show.
 
 ---
 
