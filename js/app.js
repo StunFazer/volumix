@@ -128,6 +128,22 @@ class VolumixApp {
       this.openPresetModal();
     });
 
+    // Reactivity Mode Toggle Button (AUDIO vs BPM)
+    const btnReactivity = document.getElementById('btn-reactivity-mode');
+    btnReactivity.addEventListener('click', () => {
+      if (this.audio.reactivityMode === 'audio') {
+        this.audio.reactivityMode = 'bpm';
+        btnReactivity.classList.add('active');
+        btnReactivity.querySelector('.icon').textContent = '⏱️';
+        btnReactivity.querySelector('.btn-text').textContent = 'BPM MODE';
+      } else {
+        this.audio.reactivityMode = 'audio';
+        btnReactivity.classList.remove('active');
+        btnReactivity.querySelector('.icon').textContent = '🎤';
+        btnReactivity.querySelector('.btn-text').textContent = 'AUDIO MODE';
+      }
+    });
+
     // Close Presets Modal Button
     document.getElementById('btn-close-modal').addEventListener('click', () => {
       this.closePresetModal();

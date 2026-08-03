@@ -1,7 +1,6 @@
 /**
  * VOLUMIX - Audio Processing & Real-Time Adaptive BPM Engine
- * Fix: Web Audio Destination Silence Gain node (keeps Mic Stream 100% active in Chrome/Safari)
- * + Wideband Transient Onset Detector (Works on all mobile & laptop mics)
+ * Supports: Reactivity Mode Toggle (🎤 AUDIO Mode vs ⏱️ BPM Mode)
  */
 
 export class AudioEngine {
@@ -18,16 +17,23 @@ export class AudioEngine {
     this.freqData = new Uint8Array(this.fftSize / 2);
     this.timeData = new Uint8Array(this.fftSize);
 
+    // Reactivity Mode: 'audio' or 'bpm'
+    this.reactivityMode = 'audio';
+
     // Frequency Bands (0 - 1.0)
     this.bass = 0;
     this.mid = 0;
     this.high = 0;
     this.overallEnergy = 0;
 
+    // virtual Envelope values for pure BPM mode
+    this.virtualBass = 0;
+    this.virtualOverallEnergy = 0;
+
     // Gain & Sensitivity
     this.sensitivity = 2.0;
 
-    // Fast & Slow Moving Energy Averages
+    // Fast & Slow Moving Energy Averages (Audio Mode)
     this.fastEnergy = 0.0;
     this.slowEnergy = 0.05;
 
@@ -55,11 +61,11 @@ export class AudioEngine {
     this.ctx = new AudioCtx();
     this.analyser = this.ctx.createAnalyser();
     this.analyser.fftSize = this.fftSize;
-    this.analyser.smoothingTimeConstant = 0.6; // Responsive smoothing
+    this.analyser.smoothingTimeConstant = 0.6;
 
-    // Create zero-gain silence node connected to destination (Prevents Chrome/Safari mic stream throttling & zero output)
+    // Create zero-gain silence node connected to destination
     this.silenceGain = this.ctx.createGain();
-    this.silenceGain.gain.value = 0.0; // Muted to prevent feedback loops
+    this.silenceGain.gain.value = 0.0;
     this.analyser.connect(this.silenceGain);
     this.silenceGain.connect(this.ctx.destination);
 
@@ -143,7 +149,6 @@ export class AudioEngine {
     if (this.source) this.source.disconnect();
     this.source = this.ctx.createMediaElementSource(this.audioElement);
     
-    // For audio file playback: Connect source to analyser & audible destination
     this.source.connect(this.analyser);
     const playGain = this.ctx.createGain();
     playGain.gain.value = 1.0;
@@ -198,8 +203,40 @@ export class AudioEngine {
     this.sensitivity = parseFloat(val);
   }
 
-  // Main Audio Frame Update
+  // Main Audio & BPM Frame Update
   update() {
+    const now = performance.now();
+
+    // 1. Pure BPM Reactivity Mode (Virtual Beat Clock Generator)
+    if (this.reactivityMode === 'bpm') {
+      const beatIntervalMs = 60000 / this.bpm;
+      const timeSinceLastBeat = now - this.lastBeatTime;
+
+      if (timeSinceLastBeat >= beatIntervalMs) {
+        this.beatPulse = true;
+        this.lastBeatTime = now;
+        
+        // Spike virtual envelopes on beat tick
+        this.virtualBass = 1.0;
+        this.virtualOverallEnergy = 1.0;
+
+        if (this.onBeat) this.onBeat();
+      } else {
+        this.beatPulse = false;
+        
+        // Decay virtual envelopes exponentially
+        this.virtualBass *= 0.88;
+        this.virtualOverallEnergy *= 0.90;
+      }
+
+      this.bass = this.virtualBass;
+      this.overallEnergy = this.virtualOverallEnergy;
+      this.mid = this.virtualOverallEnergy * 0.5;
+      this.high = this.virtualOverallEnergy * 0.2;
+      return;
+    }
+
+    // 2. Standard Audio / Microphone Reactivity Mode
     if (!this.analyser) return;
 
     this.analyser.getByteFrequencyData(this.freqData);
@@ -236,21 +273,19 @@ export class AudioEngine {
     // Overall Energy
     this.overallEnergy = (this.bass * 0.6) + (this.mid * 0.3) + (this.high * 0.1);
 
-    // Wideband Onset Beat & BPM Detection (Combines bass & low-mid for guaranteed mic beat capture)
+    // Wideband Onset Beat & BPM Detection
     const beatSignal = (this.bass * 0.75) + (this.mid * 0.25);
     this.detectBeat(beatSignal);
   }
 
   // Wideband Onset Beat Detection & Dynamic BPM Auto-Calculation
   detectBeat(signal) {
-    // Fast & Slow Moving Energy Averages
     this.fastEnergy = this.fastEnergy * 0.4 + signal * 0.6;
     this.slowEnergy = this.slowEnergy * 0.95 + signal * 0.05;
 
     const now = performance.now();
     const timeSinceLastBeat = now - this.lastBeatTime;
 
-    // Responsive dynamic threshold (Sensitive to small mic transients)
     const threshold = Math.max(0.03, this.slowEnergy * 1.12 + 0.01);
 
     if (this.fastEnergy > threshold && timeSinceLastBeat > 260) {
@@ -259,17 +294,14 @@ export class AudioEngine {
       const delta = timeSinceLastBeat;
       this.lastBeatTime = now;
 
-      // Filter valid beat intervals between 260ms (~230 BPM) and 1200ms (50 BPM)
       if (delta >= 260 && delta <= 1200) {
         this.beatIntervals.push(delta);
         if (this.beatIntervals.length > 5) this.beatIntervals.shift();
 
-        // Calculate average interval
         const avgInterval = this.beatIntervals.reduce((a, b) => a + b, 0) / this.beatIntervals.length;
         const autoBpm = Math.round(60000 / avgInterval);
         
         if (autoBpm >= 50 && autoBpm <= 200) {
-          // Instant & smooth BPM update
           if (this.beatIntervals.length === 1) {
             this.bpm = autoBpm;
           } else {
