@@ -62,7 +62,15 @@ export class VolumetricRenderer {
       { id: 12, name: 'Preset 13: Expanding Iris Aperture', icon: '◉', desc: 'Expanding circle iris that blink-jumps on beat' },
       { id: 13, name: 'Preset 14: Radial Multi-Beam Burst', icon: '✴', desc: '32-spoke radial beam burst' },
       { id: 14, name: 'Preset 15: Crosshair Laser Cutter', icon: '┼', desc: 'High-intensity crosshair laser plane cutter' },
-      { id: 15, name: 'Preset 16: Diamond Lattice Grid', icon: '❖', desc: 'Rotating diamond lattice beam grid that blink-jumps on beat' }
+      { id: 15, name: 'Preset 16: Diamond Lattice Grid', icon: '❖', desc: 'Rotating diamond lattice beam grid that blink-jumps on beat' },
+      { id: 16, name: 'Preset 17: Logarithmic Spiral Vortex', icon: '🌀', desc: 'Rotating dual-arm phyllotaxis spiral beams sucking into center' },
+      { id: 17, name: 'Preset 18: Liquid Sky Sheet Cutter', icon: '═', desc: 'Horizontal oscillating laser planes creating solid fog ceilings' },
+      { id: 18, name: 'Preset 19: 3D Wireframe Hypercube', icon: '🧊', desc: 'Rotating 3D tesseract wireframe projecting complex volumetric cages' },
+      { id: 19, name: 'Preset 20: Radial Scanner Tunnel', icon: '⧁', desc: 'Scanning radar wiper slicing through room haze in 360 degrees' },
+      { id: 20, name: 'Preset 21: Pulsing Audio Hex Lattice', icon: '⬡', desc: 'Concentric nesting honeycomb geometry pulsing to frequency dynamics' },
+      { id: 21, name: 'Preset 22: Kinetic Laser Lissajous', icon: '♾️', desc: 'Harmonic oscilloscope figure-eight parametric ribbons' },
+      { id: 22, name: 'Preset 23: Hyperspace Star Warp', icon: '✨', desc: 'Beams accelerating outwards from the center into physical fog' },
+      { id: 23, name: 'Preset 24: Dual Slicing Triangle Fans', icon: '▲', desc: 'Counter-rotating high-velocity polygon blades' }
     ];
 
     // Favorites Manager
@@ -183,10 +191,12 @@ export class VolumetricRenderer {
     this.size += 0.14 * (this.targetSize - this.size);
     this.brightness += 0.2 * (this.targetBrightness - this.brightness);
 
-    // Strobe Handler
+    // Strobe Handler (Supports ultra-slow to high-speed strobe)
     this.strobeCounter++;
     if (this.strobeRate > 0) {
-      const strobeInterval = Math.max(4, 14 - this.strobeRate * 1.5);
+      // Rates 1-2: slow pulse (28 and 20 frames); Rates 3-4: medium (14 and 10 frames); Rates 5-6: fast (7 and 4 frames)
+      const strobeMap = [999, 28, 20, 14, 10, 7, 4];
+      const strobeInterval = strobeMap[Math.min(this.strobeRate, 6)] || 14;
       if (this.strobeCounter % strobeInterval < Math.floor(strobeInterval / 2)) {
         ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, w, h);
@@ -519,6 +529,192 @@ export class VolumetricRenderer {
         this.drawPolygon(ctx, 0, 0, sides, r * 1.1, this.getPrimaryColor(0.9, audio));
         if (this.multiColorMode) {
           this.drawPolygon(ctx, 0, 0, sides, r * 0.65, this.getSecondaryColor(0.9, audio));
+        }
+        ctx.restore();
+        break;
+      }
+
+      case 16: { // Preset 17: Logarithmic Spiral Vortex
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(this.time * 1.4);
+        const totalNodes = 48;
+        const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+        for (let i = 0; i < totalNodes; i++) {
+          const theta = i * goldenAngle;
+          const nodeRadius = Math.sqrt(i / totalNodes) * r * 1.15;
+          const px = Math.cos(theta) * nodeRadius;
+          const py = Math.sin(theta) * nodeRadius;
+          const dotSize = Math.max(2, (3 + (i / totalNodes) * 12) * this.beamSize);
+          ctx.beginPath();
+          ctx.arc(px, py, dotSize, 0, Math.PI * 2);
+          ctx.fillStyle = (i % 2 === 0 || !this.multiColorMode)
+            ? this.getPrimaryColor(1.0, audio)
+            : this.getSecondaryColor(1.0, audio);
+          ctx.fill();
+        }
+        ctx.restore();
+        break;
+      }
+
+      case 17: { // Preset 18: Liquid Sky Sheet Cutter
+        const sheetCount = 5;
+        const sheetSpacing = (h * 0.7) / sheetCount;
+        const sheetWidth = w * 0.88 * this.beamSize;
+        ctx.lineWidth = Math.min(28, 14 * this.beamSize);
+        ctx.lineCap = 'round';
+        for (let i = 0; i < sheetCount; i++) {
+          const yPos = (cy - (h * 0.35)) + i * sheetSpacing + Math.sin(this.time * 2.2 + i * 0.8) * 22;
+          ctx.beginPath();
+          ctx.moveTo(cx - sheetWidth / 2, yPos);
+          ctx.lineTo(cx + sheetWidth / 2, yPos);
+          ctx.strokeStyle = (i % 2 === 0 || !this.multiColorMode)
+            ? this.getPrimaryColor(0.95, audio)
+            : this.getSecondaryColor(0.95, audio);
+          ctx.stroke();
+        }
+        break;
+      }
+
+      case 18: { // Preset 19: 3D Wireframe Hypercube
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(this.time * 0.7);
+        const cubeScale = r * 0.95;
+        const innerScale = cubeScale * (0.45 + Math.sin(this.time * 2.0) * 0.15);
+        ctx.lineWidth = Math.min(18, 8 * this.beamSize);
+
+        // Outer square
+        ctx.strokeStyle = this.getPrimaryColor(1.0, audio);
+        ctx.strokeRect(-cubeScale / 2, -cubeScale / 2, cubeScale, cubeScale);
+
+        // Inner square
+        ctx.strokeStyle = this.multiColorMode ? this.getSecondaryColor(1.0, audio) : this.getPrimaryColor(1.0, audio);
+        ctx.strokeRect(-innerScale / 2, -innerScale / 2, innerScale, innerScale);
+
+        // Connecting hypercube struts
+        ctx.beginPath();
+        const corners = [
+          [-cubeScale / 2, -cubeScale / 2, -innerScale / 2, -innerScale / 2],
+          [cubeScale / 2, -cubeScale / 2, innerScale / 2, -innerScale / 2],
+          [cubeScale / 2, cubeScale / 2, innerScale / 2, innerScale / 2],
+          [-cubeScale / 2, cubeScale / 2, -innerScale / 2, innerScale / 2]
+        ];
+        corners.forEach(([x1, y1, x2, y2]) => {
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+        });
+        ctx.stroke();
+        ctx.restore();
+        break;
+      }
+
+      case 19: { // Preset 20: Radial Scanner Tunnel
+        ctx.save();
+        ctx.translate(cx, cy);
+        const sweepAngle = (this.time * 3.5) % (Math.PI * 2);
+        // Background rings
+        for (let ring = 1; ring <= 4; ring++) {
+          ctx.beginPath();
+          ctx.arc(0, 0, (r * ring) / 4, 0, Math.PI * 2);
+          ctx.lineWidth = Math.max(2, 3 * this.beamSize);
+          ctx.strokeStyle = (ring % 2 === 0 && this.multiColorMode)
+            ? this.getSecondaryColor(0.4, audio)
+            : this.getPrimaryColor(0.4, audio);
+          ctx.stroke();
+        }
+        // Scanning blade
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, r * 1.1, sweepAngle - 0.4, sweepAngle);
+        ctx.closePath();
+        ctx.fillStyle = this.getPrimaryColor(0.95, audio);
+        ctx.fill();
+        ctx.restore();
+        break;
+      }
+
+      case 20: { // Preset 21: Pulsing Audio Hex Lattice
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(this.time * 0.5);
+        const hexRings = 5;
+        for (let k = 1; k <= hexRings; k++) {
+          const hexRadius = (r / hexRings) * k * (1.0 + Math.sin(this.time * 2.5 + k) * 0.1);
+          ctx.lineWidth = Math.min(16, (4 + k * 2) * this.beamSize);
+          ctx.strokeStyle = (k % 2 === 0 && this.multiColorMode)
+            ? this.getSecondaryColor(0.9, audio)
+            : this.getPrimaryColor(0.9, audio);
+          this.drawPolygon(ctx, 0, 0, 6, hexRadius, 'transparent');
+          ctx.stroke();
+        }
+        ctx.restore();
+        break;
+      }
+
+      case 21: { // Preset 22: Kinetic Laser Lissajous
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.lineWidth = Math.min(22, 10 * this.beamSize);
+        ctx.strokeStyle = this.getPrimaryColor(1.0, audio);
+        ctx.beginPath();
+        const lissPoints = 120;
+        const aFreq = 3;
+        const bFreq = 2;
+        const deltaPhase = this.time * 1.8;
+        for (let i = 0; i <= lissPoints; i++) {
+          const t = (i / lissPoints) * Math.PI * 2;
+          const lx = Math.sin(aFreq * t + deltaPhase) * (r * 1.05);
+          const ly = Math.sin(bFreq * t) * (r * 0.85);
+          if (i === 0) ctx.moveTo(lx, ly);
+          else ctx.lineTo(lx, ly);
+        }
+        ctx.stroke();
+        ctx.restore();
+        break;
+      }
+
+      case 22: { // Preset 23: Hyperspace Star Warp
+        ctx.save();
+        ctx.translate(cx, cy);
+        const starCount = 36;
+        for (let i = 0; i < starCount; i++) {
+          const angle = (i / starCount) * Math.PI * 2;
+          const prog = ((this.time * 1.5 + (i * 0.08)) % 1.0);
+          const dist = prog * r * 1.25;
+          const length = (prog * 45 + 10) * this.beamSize;
+          const x1 = Math.cos(angle) * dist;
+          const y1 = Math.sin(angle) * dist;
+          const x2 = Math.cos(angle) * (dist + length);
+          const y2 = Math.sin(angle) * (dist + length);
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.lineWidth = Math.max(2, (prog * 8) * this.beamSize);
+          ctx.strokeStyle = (i % 2 === 0 || !this.multiColorMode)
+            ? this.getPrimaryColor(prog, audio)
+            : this.getSecondaryColor(prog, audio);
+          ctx.stroke();
+        }
+        ctx.restore();
+        break;
+      }
+
+      case 23: { // Preset 24: Dual Slicing Triangle Fans
+        ctx.save();
+        ctx.translate(cx, cy);
+        // Fan 1 (clockwise)
+        ctx.save();
+        ctx.rotate(this.time * 2.2);
+        this.drawPolygon(ctx, 0, 0, 3, r * 1.0, this.getPrimaryColor(0.9, audio));
+        ctx.restore();
+
+        // Fan 2 (counter-clockwise)
+        if (this.multiColorMode) {
+          ctx.save();
+          ctx.rotate(-this.time * 2.2);
+          this.drawPolygon(ctx, 0, 0, 3, r * 0.65, this.getSecondaryColor(0.9, audio));
+          ctx.restore();
         }
         ctx.restore();
         break;

@@ -6,6 +6,8 @@
   <title>VOLUMIX - Portable Volumetric Light Synthesizer</title>
   <meta name="description" content="Audio-reactive 3D volumetric light beam synthesizer for fog, haze, and portable projectors.">
   <meta name="theme-color" content="#000000">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,12 +19,12 @@
     <canvas id="render-canvas"></canvas>
   </div>
 
-  <!-- Full-Screen 32 Preset Grid Modal Overlay -->
+  <!-- Full-Screen 24 Preset Grid Modal Overlay -->
   <div id="preset-modal" class="preset-modal hidden">
     <div class="preset-modal-content">
       <div class="modal-header">
         <div class="modal-title-group">
-          <h2>32 VOLUMETRIC PRESETS</h2>
+          <h2>24 VOLUMETRIC PRESETS</h2>
           <span class="modal-subtitle">Tap any card to select mode</span>
         </div>
         <div class="modal-header-actions">
@@ -97,9 +99,9 @@
           <span class="btn-text">AUDIO</span>
           <input type="file" id="audio-file-input" accept="audio/*" hidden>
         </label>
-        <button id="btn-open-presets" class="btn btn-dock btn-primary-dock" title="Open 32 Presets Grid Modal">
+        <button id="btn-open-presets" class="btn btn-dock btn-primary-dock" title="Open 24 Presets Grid Modal">
           <span class="icon">🎛️</span>
-          <span class="btn-text">32 PRESETS</span>
+          <span class="btn-text">PRESETS</span>
         </button>
         <button id="btn-multicolor" class="btn btn-dock active" title="Toggle Dual-Color Multi-Tinting">
           <span class="icon">🎨</span>
