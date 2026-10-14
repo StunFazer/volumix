@@ -70,7 +70,15 @@ export class VolumetricRenderer {
       { id: 20, name: 'Preset 21: Pulsing Audio Hex Lattice', icon: '⬡', desc: 'Concentric nesting honeycomb geometry pulsing to frequency dynamics' },
       { id: 21, name: 'Preset 22: Kinetic Laser Lissajous', icon: '♾️', desc: 'Harmonic oscilloscope figure-eight parametric ribbons' },
       { id: 22, name: 'Preset 23: Hyperspace Star Warp', icon: '✨', desc: 'Beams accelerating outwards from the center into physical fog' },
-      { id: 23, name: 'Preset 24: Dual Slicing Triangle Fans', icon: '▲', desc: 'Counter-rotating high-velocity polygon blades' }
+      { id: 23, name: 'Preset 24: Dual Slicing Triangle Fans', icon: '▲', desc: 'Counter-rotating high-velocity polygon blades' },
+      { id: 24, name: 'Preset 25: Bio-Laser DNA Helix', icon: '🧬', desc: 'Double helix sine ribbons twisting with cross-link rungs' },
+      { id: 25, name: 'Preset 26: Pulsing Metatron Cube', icon: '✡', desc: 'Sacred geometry 13-sphere lattice projecting multi-axis laser corridors' },
+      { id: 26, name: 'Preset 27: Infinite Torus Tunnel', icon: '⭕', desc: 'Rotating 3D donut rings pulsating down depth corridor' },
+      { id: 27, name: 'Preset 28: Laser Rose Rhodonea', icon: '🌸', desc: '8-petal polar coordinate mathematical flower curves' },
+      { id: 28, name: 'Preset 29: Scanning Horizon Grid', icon: '🌐', desc: 'Retro 80s outrun synthwave perspective grid receding to infinity' },
+      { id: 29, name: 'Preset 30: Kinetic Geodesic Sphere', icon: '⚽', desc: 'Rotating 3D wireframe icosahedron casting spherical cages' },
+      { id: 30, name: 'Preset 31: Laser Equalizer Stacks', icon: '📊', desc: 'Radial 16-band spectrum analyzer towers bouncing to audio' },
+      { id: 31, name: 'Preset 32: Cyberpunk Dual Prism Cutter', icon: '💎', desc: 'Interlocking diamond planes shearing dynamically on beat' }
     ];
 
     // Favorites Manager
@@ -121,6 +129,19 @@ export class VolumetricRenderer {
       case 'amber': return `rgba(255, 170, 0, ${b})`;
       case 'violet': return `rgba(204, 0, 255, ${b})`;
       case 'white': return `rgba(255, 255, 255, ${b})`;
+      case 'pink': return `rgba(255, 0, 187, ${b})`;
+      case 'acid': return `rgba(191, 255, 0, ${b})`;
+      case 'gold': return `rgba(255, 215, 0, ${b})`;
+      case 'aqua': return `rgba(0, 255, 166, ${b})`;
+      case 'uv': return `rgba(119, 0, 255, ${b})`;
+      case 'fire': {
+        const fireMix = Math.sin(this.time * 3 + audio.bass * 2);
+        return fireMix > 0 ? `rgba(255, 34, 0, ${b})` : `rgba(255, 170, 0, ${b})`;
+      }
+      case 'cyber': {
+        const cyberMix = Math.sin(this.time * 2.5);
+        return cyberMix > 0 ? `rgba(0, 247, 255, ${b})` : `rgba(255, 0, 170, ${b})`;
+      }
       case 'rainbow':
       default: {
         const hue = Math.floor((this.time * 40 + audio.bass * 120) % 360);
@@ -141,6 +162,13 @@ export class VolumetricRenderer {
       case 'amber': return `rgba(0, 153, 255, ${b})`;
       case 'violet': return `rgba(0, 255, 102, ${b})`;
       case 'white': return `rgba(0, 247, 255, ${b})`;
+      case 'pink': return `rgba(0, 255, 204, ${b})`;
+      case 'acid': return `rgba(204, 0, 255, ${b})`;
+      case 'gold': return `rgba(0, 102, 255, ${b})`;
+      case 'aqua': return `rgba(255, 0, 102, ${b})`;
+      case 'uv': return `rgba(0, 255, 136, ${b})`;
+      case 'fire': return `rgba(255, 255, 0, ${b})`;
+      case 'cyber': return `rgba(255, 255, 255, ${b})`;
       case 'rainbow':
       default: {
         const hue = Math.floor((this.time * 40 + 180 + audio.bass * 120) % 360);
@@ -716,6 +744,290 @@ export class VolumetricRenderer {
           this.drawPolygon(ctx, 0, 0, 3, r * 0.65, this.getSecondaryColor(0.9, audio));
           ctx.restore();
         }
+        ctx.restore();
+        break;
+      }
+
+      case 24: { // Preset 25: Bio-Laser DNA Helix
+        ctx.save();
+        ctx.translate(cx, cy);
+        const pairs = 28;
+        const helixWidth = w * 0.7 * this.beamSize;
+        const helixHeight = r * 0.85;
+        const stepX = helixWidth / pairs;
+        const startX = -helixWidth / 2;
+
+        for (let i = 0; i < pairs; i++) {
+          const x = startX + i * stepX;
+          const phase = this.time * 3.0 + i * 0.28;
+          const y1 = Math.sin(phase) * helixHeight;
+          const y2 = -y1;
+
+          // Cross-link rungs
+          if (i % 2 === 0) {
+            ctx.beginPath();
+            ctx.moveTo(x, y1);
+            ctx.lineTo(x, y2);
+            ctx.lineWidth = Math.max(1, 2.5 * this.beamSize);
+            ctx.strokeStyle = this.multiColorMode ? this.getSecondaryColor(0.6, audio) : this.getPrimaryColor(0.6, audio);
+            ctx.stroke();
+          }
+
+          // Strand 1 node
+          ctx.beginPath();
+          ctx.arc(x, y1, Math.max(2, 6 * this.beamSize), 0, Math.PI * 2);
+          ctx.fillStyle = this.getPrimaryColor(1.0, audio);
+          ctx.fill();
+
+          // Strand 2 node
+          ctx.beginPath();
+          ctx.arc(x, y2, Math.max(2, 6 * this.beamSize), 0, Math.PI * 2);
+          ctx.fillStyle = this.multiColorMode ? this.getSecondaryColor(1.0, audio) : this.getPrimaryColor(1.0, audio);
+          ctx.fill();
+        }
+        ctx.restore();
+        break;
+      }
+
+      case 25: { // Preset 26: Pulsing Metatron Cube
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(this.time * 0.4);
+        const nodeRadius = Math.max(2, 6 * this.beamSize);
+        const centerR = r * 0.75;
+        const nodePoints = [[0, 0]]; // Center
+
+        // Inner 6 circles (Hexagon ring 1)
+        for (let i = 0; i < 6; i++) {
+          const a = (i / 6) * Math.PI * 2;
+          nodePoints.push([Math.cos(a) * (centerR * 0.5), Math.sin(a) * (centerR * 0.5)]);
+        }
+        // Outer 6 circles (Hexagon ring 2)
+        for (let i = 0; i < 6; i++) {
+          const a = (i / 6) * Math.PI * 2 + Math.PI / 6;
+          nodePoints.push([Math.cos(a) * centerR, Math.sin(a) * centerR]);
+        }
+
+        // Draw connecting sacred corridors between points
+        ctx.lineWidth = Math.max(1, 2 * this.beamSize);
+        ctx.strokeStyle = this.getPrimaryColor(0.5 + audio.bass * 0.4, audio);
+        for (let i = 0; i < nodePoints.length; i++) {
+          for (let j = i + 1; j < nodePoints.length; j++) {
+            ctx.beginPath();
+            ctx.moveTo(nodePoints[i][0], nodePoints[i][1]);
+            ctx.lineTo(nodePoints[j][0], nodePoints[j][1]);
+            ctx.stroke();
+          }
+        }
+
+        // Draw node circles
+        nodePoints.forEach(([nx, ny], idx) => {
+          ctx.beginPath();
+          ctx.arc(nx, ny, nodeRadius, 0, Math.PI * 2);
+          ctx.fillStyle = (idx % 2 === 0 || !this.multiColorMode)
+            ? this.getPrimaryColor(1.0, audio)
+            : this.getSecondaryColor(1.0, audio);
+          ctx.fill();
+        });
+        ctx.restore();
+        break;
+      }
+
+      case 26: { // Preset 27: Infinite Torus Tunnel
+        ctx.save();
+        ctx.translate(cx, cy);
+        const torusRings = 10;
+        for (let i = 0; i < torusRings; i++) {
+          const p = ((this.time * 1.6 + (i / torusRings)) % 1.0);
+          const currentR = p * r * 1.35;
+          const xStretch = 1.0 + Math.sin(this.time * 2 + i * 0.4) * 0.25;
+          const yStretch = 1.0 + Math.cos(this.time * 2 + i * 0.4) * 0.25;
+          ctx.save();
+          ctx.rotate(this.time * 0.3 + i * 0.15);
+          ctx.beginPath();
+          ctx.ellipse(0, 0, Math.max(2, currentR * xStretch), Math.max(2, currentR * yStretch * 0.6), 0, 0, Math.PI * 2);
+          ctx.lineWidth = Math.min(18, (2 + (1 - p) * 12) * this.beamSize);
+          ctx.strokeStyle = (i % 2 === 0 || !this.multiColorMode)
+            ? this.getPrimaryColor(1 - p, audio)
+            : this.getSecondaryColor(1 - p, audio);
+          ctx.stroke();
+          ctx.restore();
+        }
+        ctx.restore();
+        break;
+      }
+
+      case 27: { // Preset 28: Laser Rose Rhodonea
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(this.time * 0.8);
+        const kPetals = 4; // 8-petal rose curve
+        const rosePoints = 180;
+        ctx.lineWidth = Math.min(22, 9 * this.beamSize);
+        ctx.strokeStyle = this.getPrimaryColor(1.0, audio);
+        ctx.beginPath();
+        for (let i = 0; i <= rosePoints; i++) {
+          const theta = (i / rosePoints) * Math.PI * 2;
+          const currentRadius = Math.cos(kPetals * theta) * r * (0.95 + audio.bass * 0.2);
+          const px = Math.cos(theta) * currentRadius;
+          const py = Math.sin(theta) * currentRadius;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.stroke();
+
+        if (this.multiColorMode) {
+          ctx.save();
+          ctx.rotate(-this.time * 1.2);
+          ctx.lineWidth = Math.min(14, 6 * this.beamSize);
+          ctx.strokeStyle = this.getSecondaryColor(0.85, audio);
+          ctx.beginPath();
+          for (let i = 0; i <= rosePoints; i++) {
+            const theta = (i / rosePoints) * Math.PI * 2;
+            const currentRadius = Math.sin(3 * theta) * r * 0.6;
+            const px = Math.cos(theta) * currentRadius;
+            const py = Math.sin(theta) * currentRadius;
+            if (i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+          ctx.stroke();
+          ctx.restore();
+        }
+        ctx.restore();
+        break;
+      }
+
+      case 28: { // Preset 29: Scanning Horizon Grid
+        const gridLinesV = 9;
+        const gridLinesH = 8;
+        const horizonY = cy - (h * 0.1);
+        const bottomY = cy + (h * 0.45);
+        ctx.lineWidth = Math.max(1.5, 3 * this.beamSize);
+
+        // Perspective vertical lines
+        for (let i = 0; i < gridLinesV; i++) {
+          const bottomX = cx + (i - (gridLinesV - 1) / 2) * (w * 0.12 * this.beamSize);
+          ctx.beginPath();
+          ctx.moveTo(cx, horizonY);
+          ctx.lineTo(bottomX, bottomY);
+          ctx.strokeStyle = this.getPrimaryColor(0.8, audio);
+          ctx.stroke();
+        }
+
+        // Receding horizontal lines moving towards viewer
+        const speed = (this.time * 2.2) % 1.0;
+        for (let j = 0; j < gridLinesH; j++) {
+          const prog = (j + speed) / gridLinesH;
+          const lineY = horizonY + Math.pow(prog, 2.2) * (bottomY - horizonY);
+          const spanW = w * 0.9 * Math.pow(prog, 1.2);
+          ctx.beginPath();
+          ctx.moveTo(cx - spanW / 2, lineY);
+          ctx.lineTo(cx + spanW / 2, lineY);
+          ctx.strokeStyle = (j % 2 === 0 || !this.multiColorMode)
+            ? this.getPrimaryColor(prog, audio)
+            : this.getSecondaryColor(prog, audio);
+          ctx.stroke();
+        }
+        break;
+      }
+
+      case 29: { // Preset 30: Kinetic Geodesic Sphere
+        ctx.save();
+        ctx.translate(cx, cy);
+        const geoLatRings = 7;
+        const geoLongRings = 6;
+        for (let i = 1; i <= geoLatRings; i++) {
+          const latAngle = ((i / (geoLatRings + 1)) - 0.5) * Math.PI;
+          const ringR = Math.cos(latAngle) * r;
+          const ringY = Math.sin(latAngle) * r * 0.85;
+          ctx.save();
+          ctx.translate(0, ringY);
+          ctx.scale(1.0, 0.35 + Math.sin(this.time * 1.5) * 0.1);
+          ctx.beginPath();
+          ctx.arc(0, 0, Math.max(2, ringR), 0, Math.PI * 2);
+          ctx.lineWidth = Math.max(1.5, 3 * this.beamSize);
+          ctx.strokeStyle = (i % 2 === 0 && this.multiColorMode)
+            ? this.getSecondaryColor(0.85, audio)
+            : this.getPrimaryColor(0.85, audio);
+          ctx.stroke();
+          ctx.restore();
+        }
+        for (let j = 0; j < geoLongRings; j++) {
+          const rotA = (j / geoLongRings) * Math.PI + (this.time * 0.6);
+          ctx.save();
+          ctx.rotate(rotA);
+          ctx.scale(0.3, 1.0);
+          ctx.beginPath();
+          ctx.arc(0, 0, r, 0, Math.PI * 2);
+          ctx.lineWidth = Math.max(1, 2 * this.beamSize);
+          ctx.strokeStyle = this.getPrimaryColor(0.5, audio);
+          ctx.stroke();
+          ctx.restore();
+        }
+        ctx.restore();
+        break;
+      }
+
+      case 30: { // Preset 31: Laser Equalizer Stacks
+        ctx.save();
+        ctx.translate(cx, cy);
+        const bands = 16;
+        const angleStep = (Math.PI * 2) / bands;
+        const innerRadius = r * 0.25;
+        const maxBarLen = r * 0.85;
+
+        for (let i = 0; i < bands; i++) {
+          const a = i * angleStep + (this.time * 0.3);
+          const freqIndex = Math.floor((i / bands) * 32);
+          const freqMagnitude = audio.freqData ? (audio.freqData[freqIndex] || 0) / 255 : 0.5;
+          const energyBoost = Math.max(0.15, (freqMagnitude * 0.7 + audio.bass * 0.3) * this.beamSize);
+          const barLength = innerRadius + energyBoost * maxBarLen;
+
+          const x1 = Math.cos(a) * innerRadius;
+          const y1 = Math.sin(a) * innerRadius;
+          const x2 = Math.cos(a) * barLength;
+          const y2 = Math.sin(a) * barLength;
+
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.lineWidth = Math.min(18, 8 * this.beamSize);
+          ctx.lineCap = 'round';
+          ctx.strokeStyle = (i % 2 === 0 || !this.multiColorMode)
+            ? this.getPrimaryColor(0.95, audio)
+            : this.getSecondaryColor(0.95, audio);
+          ctx.stroke();
+        }
+        ctx.restore();
+        break;
+      }
+
+      case 31: { // Preset 32: Cyberpunk Dual Prism Cutter
+        ctx.save();
+        ctx.translate(cx, cy);
+        const prismSides = 4;
+        const prismR = r * 1.1;
+
+        // Prism 1
+        ctx.save();
+        ctx.rotate(this.time * 1.5);
+        ctx.lineWidth = Math.min(26, 12 * this.beamSize);
+        ctx.strokeStyle = this.getPrimaryColor(1.0, audio);
+        this.drawPolygon(ctx, 0, 0, prismSides, prismR, 'transparent');
+        ctx.stroke();
+        ctx.restore();
+
+        // Prism 2 (Shearing counter-rotation)
+        ctx.save();
+        ctx.rotate(-this.time * 1.5);
+        ctx.lineWidth = Math.min(26, 12 * this.beamSize);
+        ctx.strokeStyle = this.multiColorMode ? this.getSecondaryColor(1.0, audio) : this.getPrimaryColor(1.0, audio);
+        this.drawPolygon(ctx, 0, 0, prismSides, prismR * 0.7, 'transparent');
+        ctx.stroke();
+        ctx.restore();
+
         ctx.restore();
         break;
       }

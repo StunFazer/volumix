@@ -19,12 +19,12 @@
     <canvas id="render-canvas"></canvas>
   </div>
 
-  <!-- Full-Screen 24 Preset Grid Modal Overlay -->
+  <!-- Full-Screen 32 Preset Grid Modal Overlay -->
   <div id="preset-modal" class="preset-modal hidden">
     <div class="preset-modal-content">
       <div class="modal-header">
         <div class="modal-title-group">
-          <h2>24 VOLUMETRIC PRESETS</h2>
+          <h2>32 VOLUMETRIC PRESETS</h2>
           <span class="modal-subtitle">Tap any card to select mode</span>
         </div>
         <div class="modal-header-actions">
@@ -99,9 +99,9 @@
           <span class="btn-text">AUDIO</span>
           <input type="file" id="audio-file-input" accept="audio/*" hidden>
         </label>
-        <button id="btn-open-presets" class="btn btn-dock btn-primary-dock" title="Open 24 Presets Grid Modal">
+        <button id="btn-open-presets" class="btn btn-dock btn-primary-dock" title="Open 32 Presets Grid Modal">
           <span class="icon">🎛️</span>
-          <span class="btn-text">PRESETS</span>
+          <span class="btn-text">32 PRESETS</span>
         </button>
         <button id="btn-multicolor" class="btn btn-dock active" title="Toggle Dual-Color Multi-Tinting">
           <span class="icon">🎨</span>
@@ -192,6 +192,13 @@
             <button class="color-chip" data-color="amber" style="background:#ffaa00;" title="Amber Gold"></button>
             <button class="color-chip" data-color="violet" style="background:#cc00ff;" title="Acid Violet"></button>
             <button class="color-chip" data-color="white" style="background:#ffffff;" title="High Luma White"></button>
+            <button class="color-chip" data-color="pink" style="background:#ff00bb;" title="Hot Laser Pink"></button>
+            <button class="color-chip" data-color="acid" style="background:#bfff00;" title="Toxic Acid Lime"></button>
+            <button class="color-chip" data-color="gold" style="background:#ffd700;" title="Solar Flare Gold"></button>
+            <button class="color-chip" data-color="aqua" style="background:#00ffa6;" title="Deep Laser Aqua"></button>
+            <button class="color-chip" data-color="uv" style="background:#7700ff;" title="Deep UV 405nm"></button>
+            <button class="color-chip" data-color="fire" style="background:linear-gradient(45deg, #ff2200, #ffaa00);" title="Fire Ember Bi-Color"></button>
+            <button class="color-chip" data-color="cyber" style="background:linear-gradient(45deg, #00f7ff, #ff00aa);" title="Cyberpunk Neon"></button>
             <button class="color-chip" data-color="rainbow" style="background:linear-gradient(45deg, #ff0044, #00ff66, #0099ff);" title="Spectrum Shift"></button>
           </div>
         </div>

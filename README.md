@@ -15,10 +15,16 @@ Volumix is optimized specifically for physical **fog, smoke, and haze environmen
 
 ## ⚡ Core Features
 
-- **24 Curated Volumetric Presets**: A comprehensive suite of 24 procedural visual generators:
+- **32 Curated Volumetric Presets**: A comprehensive suite of 32 procedural visual generators:
   - *Perimeter Orbiting Dots*, *Concentric Alternating Dot Rings*, *Flash-Jump Liquid Sky Bar*, *Sine Spacing Bar Wave*
   - *Logarithmic Spiral Vortex*, *Liquid Sky Sheet Cutter*, *3D Wireframe Hypercube*, *Radial Scanner Tunnel*
   - *Pulsing Audio Hex Lattice*, *Kinetic Laser Lissajous*, *Hyperspace Star Warp*, *Dual Slicing Triangle Fans*
+  - *Bio-Laser DNA Helix*, *Pulsing Metatron Cube*, *Infinite Torus Tunnel*, *Laser Rose Rhodonea*
+  - *Scanning Horizon Grid*, *Kinetic Geodesic Sphere*, *Laser Equalizer Stacks*, *Cyberpunk Dual Prism Cutter*
+- **15 Laser Diode Color Palettes & Multi-Tint Effects**: Single-wavelength diodes and dynamic dual-color pairings:
+  - *Electric Blue*, *520nm Laser Green*, *635nm Crimson Red*, *Cyber Cyan*, *Amber Gold*, *Acid Violet*, *High Luma White*
+  - *Hot Laser Pink*, *Toxic Acid Lime*, *Solar Flare Gold*, *Deep Laser Aqua*, *Deep UV 405nm*
+  - *Dynamic Bi-Color Fire Ember*, *Cyberpunk Neon*, and continuous *Spectrum Shift Rainbow*
 - **Offline Progressive Web App (PWA)**: Standalone installation support on Android, iOS, tablet, and desktop with zero-network service worker caching.
 - **Ultra-Slow to High-Speed Strobe Engine**: Multi-tiered strobe frequencies from slow atmospheric pulses (28 frames / ~2 Hz) to rapid stroboscopic cuts.
 - **Dual Reactivity Modes (Audio & Pure BPM)**: Switch effortlessly between microphone / audio track listening and a dedicated procedural BPM beat clock.
@@ -49,5 +55,5 @@ To run on your smartphone or tablet on the same local Wi-Fi network:
 
 ## 🎛️ Keyboard & Touch Bindings
 - **Tap Canvas / Screen**: Toggle UI Controls hidden/visible.
-- **Tap Color Chips**: Change laser diode wavelength color scheme (Blue, Green, Red, Cyan, Amber, Violet, White, Rainbow).
-- **Favs Button**: Filter the 16 presets grid modal to quickly launch your favorite routines.
+- **Tap Color Chips**: Change laser diode wavelength color scheme (15 options including mono, dual, and shifting palettes).
+- **Favs Button**: Filter the 32 presets grid modal to quickly launch your favorite routines.
